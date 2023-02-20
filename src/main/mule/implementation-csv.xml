@@ -23,10 +23,17 @@ read(payload.parts.fileContent.content.^raw, "application/csv",{separator: ";"})
 ]]></ee:set-payload>
 				</ee:message>
 			</ee:transform>
-		<foreach doc:name="For Each" doc:id="516c02ba-f74c-46af-8e9b-b6abeae320d9" collection="#[payload]">
-			<http:request method="POST" doc:name="Request" doc:id="15f7e707-3d3d-4ee4-998c-cf1e0d14fc31" path="users" config-ref="HTTP_Request_configuration"/>
-			<logger level="INFO" doc:name="Logger" doc:id="4b04fd11-299f-495e-b188-b2dc692cc0d4" />
-		</foreach>
+		<http:request method="POST" doc:name="Request" doc:id="15f7e707-3d3d-4ee4-998c-cf1e0d14fc31" path="users" config-ref="HTTP_Request_configuration" />
+		<ee:transform doc:name="Transform Message" doc:id="c9be02d9-4f0b-4d70-986c-56e37841e4b4" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Users inserted!"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
 	</flow>
 	<flow name="getUsers" doc:id="dd7b1142-4f0f-4bf3-a7e8-33d5f8f408a9" >
 		<http:request method="GET" doc:name="Request" doc:id="d4872219-b2b8-4e58-b863-673eaea5c644" path="users" outputMimeType="application/json" config-ref="HTTP_Request_configuration">
