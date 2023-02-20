@@ -13,13 +13,10 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 output application/json
 ---
 read(payload.parts.fileContent.content.^raw, "application/csv",{separator: ";"}) map (item, index) -> {
-	(item mapObject (value, key) -> {
-     	(name: value) if(key as String == 'nome'),
-        (surname: value) if(key as String == 'cognome'),
-        (mail: value) if(key as String == 'mail'),
-        (address: value) if(key as String == 'indirizzo')
-      }	      
-  )
+	name: item.nome,
+	surname: item.cognome,
+	mail: item.mail,
+	address: item.indirizzo
 }
 	
 
