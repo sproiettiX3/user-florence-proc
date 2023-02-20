@@ -1,0 +1,9 @@
+http:
+  port: "8082"
+  host: "localhost"
+  basepath: "users"
+
+httpRequest:
+  port: "8081"
+  host: "localhost"
+  basepath: "api/"  

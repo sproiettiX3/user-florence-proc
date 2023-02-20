@@ -1,0 +1,72 @@
+#%RAML 1.0
+title: user-florence-proc
+
+types:
+  UsersDataType:
+    type: object
+    properties:
+      id: 
+        type: integer
+        minimum: 1
+        required: false
+      name: string 
+      surname: string    
+      mail: 
+        type: string
+        required: false
+      address: string
+    examples:
+        value:
+          name: simone
+          surname: proietti
+          mail: "simone.proietti@x3solutions.it"
+          address: "Via Montanara, 7 Terni"
+
+/users:
+  get:
+    queryParameters:    
+      usersName: 
+        type: string
+        required: false  
+      usersSurname:
+        type: string        
+        required: false    
+    responses:
+      200:
+        body:
+          application/json: 
+            type: UsersDataType[]
+            examples:
+              output: 
+                value:
+                  -
+                    id: 1
+                    name: simone
+                    surname: proietti
+                    mail: "simone.proietti@x3solutions.it"
+                    address: "Via Montanara, 7 Terni"
+                  -   
+                    id: 2                 
+                    name: simone
+                    surname: proietti
+                    mail: "simone.proietti2@x3solutions.it"
+                    address: "Via Montanara, 7 Terni"
+                
+  post:
+    body:
+      multipart/form-data:
+        properties:          
+          fileContent:
+            type: file
+            fileTypes: ['application/csv','text/csv']
+            required: true
+               
+    responses:
+      201:
+        body:
+          application/json: 
+            example:
+              message: Users created!
+              
+            
+  

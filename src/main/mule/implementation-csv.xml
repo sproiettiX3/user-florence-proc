@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<flow name="postCsvWithFile" doc:id="e2104da2-bd3e-4ee0-8a73-a79127451484" >
+		<ee:transform doc:name="Transform Message" doc:id="7169f29a-6f9a-41eb-adcc-0e7bf6a6e6b6">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+read(payload.parts.fileContent.content.^raw, "application/csv",{separator: ";"}) map (item, index) -> {
+	(item mapObject (value, key) -> {
+     	(name: value) if(key as String == 'nome'),
+        (surname: value) if(key as String == 'cognome'),
+        (mail: value) if(key as String == 'mail'),
+        (address: value) if(key as String == 'indirizzo')
+      }	      
+  )
+}
+	
+
+]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		<foreach doc:name="For Each" doc:id="516c02ba-f74c-46af-8e9b-b6abeae320d9" collection="#[payload]">
+			<http:request method="POST" doc:name="Request" doc:id="15f7e707-3d3d-4ee4-998c-cf1e0d14fc31" path="users" config-ref="HTTP_Request_configuration"/>
+			<logger level="INFO" doc:name="Logger" doc:id="4b04fd11-299f-495e-b188-b2dc692cc0d4" />
+		</foreach>
+	</flow>
+	<flow name="getUsers" doc:id="dd7b1142-4f0f-4bf3-a7e8-33d5f8f408a9" >
+		<http:request method="GET" doc:name="Request" doc:id="d4872219-b2b8-4e58-b863-673eaea5c644" path="users" outputMimeType="application/json" config-ref="HTTP_Request_configuration">
+			<http:query-params ><![CDATA[#[output application/java
+---
+{
+	usersName : attributes.queryParams.usersName default "",
+	usersSurname : attributes.queryParams.usersSurname default ""
+}]]]></http:query-params>
+		</http:request>
+		<ee:transform doc:name="Transform Message" doc:id="49ef20d7-06f2-44e5-8c7d-ddb895729816" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
