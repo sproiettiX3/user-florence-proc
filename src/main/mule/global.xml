@@ -11,4 +11,5 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="6e4c1bcc-c083-407b-a0cf-3049c103d7a9" basePath="${httpRequest.basepath}" >
 		<http:request-connection host="${httpRequest.host}" port="${httpRequest.port}" />
 	</http:request-config>
+	<configuration doc:name="Configuration" doc:id="c815adbd-0ce7-42ef-9ba6-576440028598" defaultErrorHandler-ref="interface-csvError_Handler" />
 </mule>

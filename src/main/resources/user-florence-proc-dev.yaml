@@ -7,3 +7,5 @@ httpRequest:
   port: "8081"
   host: "localhost"
   basepath: "api/"  
+  
+address: "ciao"
